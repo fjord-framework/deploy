@@ -1,0 +1,691 @@
+{
+  "Resources": {
+    "fjordLBFjordServerLB0CF0F6D3": {
+      "Type": "AWS::ElasticLoadBalancingV2::LoadBalancer",
+      "Properties": {
+        "LoadBalancerAttributes": [
+          {
+            "Key": "deletion_protection.enabled",
+            "Value": "false"
+          }
+        ],
+        "Scheme": "internet-facing",
+        "SecurityGroups": [
+          {
+            "Fn::GetAtt": [
+              "fjordLBFjordServerLBSecurityGroup2F37C913",
+              "GroupId"
+            ]
+          }
+        ],
+        "Subnets": [
+          {
+            "Fn::ImportValue": "fjord-shared:ExportsOutputReffjordvpcPublicSubnet1SubnetEBA3A1C2778A2985"
+          },
+          {
+            "Fn::ImportValue": "fjord-shared:ExportsOutputReffjordvpcPublicSubnet2Subnet58502962DDF28B2D"
+          }
+        ],
+        "Type": "application"
+      },
+      "Metadata": {
+        "aws:cdk:path": "fjord-server/fjord-LB-Fjord-Server/LB/Resource"
+      }
+    },
+    "fjordLBFjordServerLBSecurityGroup2F37C913": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "Automatically created Security Group for ELB fjordserverfjordLBFjordServerLB15636C08",
+        "SecurityGroupIngress": [
+          {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow from anyone on port 80",
+            "FromPort": 80,
+            "IpProtocol": "tcp",
+            "ToPort": 80
+          }
+        ],
+        "VpcId": {
+          "Fn::ImportValue": "fjord-shared:ExportsOutputReffjordvpcE7138455B515B4A8"
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "fjord-server/fjord-LB-Fjord-Server/LB/SecurityGroup/Resource"
+      }
+    },
+    "fjordLBFjordServerLBSecurityGrouptofjordserverfjordLBFjordServerServiceSecurityGroup8E72838580D79CF588": {
+      "Type": "AWS::EC2::SecurityGroupEgress",
+      "Properties": {
+        "GroupId": {
+          "Fn::GetAtt": [
+            "fjordLBFjordServerLBSecurityGroup2F37C913",
+            "GroupId"
+          ]
+        },
+        "IpProtocol": "tcp",
+        "Description": "Load balancer to target",
+        "DestinationSecurityGroupId": {
+          "Fn::GetAtt": [
+            "fjordLBFjordServerServiceSecurityGroup8E1BB498",
+            "GroupId"
+          ]
+        },
+        "FromPort": 80,
+        "ToPort": 80
+      },
+      "Metadata": {
+        "aws:cdk:path": "fjord-server/fjord-LB-Fjord-Server/LB/SecurityGroup/to fjordserverfjordLBFjordServerServiceSecurityGroup8E728385:80"
+      }
+    },
+    "fjordLBFjordServerLBPublicListener7B6D4414": {
+      "Type": "AWS::ElasticLoadBalancingV2::Listener",
+      "Properties": {
+        "DefaultActions": [
+          {
+            "TargetGroupArn": {
+              "Ref": "fjordLBFjordServerLBPublicListenerECSGroup24FB728E"
+            },
+            "Type": "forward"
+          }
+        ],
+        "LoadBalancerArn": {
+          "Ref": "fjordLBFjordServerLB0CF0F6D3"
+        },
+        "Port": 80,
+        "Protocol": "HTTP"
+      },
+      "Metadata": {
+        "aws:cdk:path": "fjord-server/fjord-LB-Fjord-Server/LB/PublicListener/Resource"
+      }
+    },
+    "fjordLBFjordServerLBPublicListenerECSGroup24FB728E": {
+      "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
+      "Properties": {
+        "Port": 80,
+        "Protocol": "HTTP",
+        "TargetType": "ip",
+        "VpcId": {
+          "Fn::ImportValue": "fjord-shared:ExportsOutputReffjordvpcE7138455B515B4A8"
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "fjord-server/fjord-LB-Fjord-Server/LB/PublicListener/ECSGroup/Resource"
+      }
+    },
+    "fjordLBFjordServerTaskDefTaskRoleEFDA00E5": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "ecs-tasks.amazonaws.com"
+              }
+            }
+          ],
+          "Version": "2012-10-17"
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "fjord-server/fjord-LB-Fjord-Server/TaskDef/TaskRole/Resource"
+      }
+    },
+    "fjordLBFjordServerTaskDefDB4C111C": {
+      "Type": "AWS::ECS::TaskDefinition",
+      "Properties": {
+        "ContainerDefinitions": [
+          {
+            "Environment": [
+              {
+                "Name": "JWT_KEY",
+                "Value": "jqq247gjrhvariorrbgehtcwz5k0x0slmmxndnde"
+              },
+              {
+                "Name": "SEC_PER_PULSE",
+                "Value": "30"
+              },
+              {
+                "Name": "REDIS_HOST",
+                "Value": {
+                  "Fn::ImportValue": "fjord-shared:ExportsOutputFnGetAttfjordredisfjordrediscluster656EBEC2RedisEndpointAddressDBB68F11"
+                }
+              },
+              {
+                "Name": "REDIS_PORT",
+                "Value": {
+                  "Fn::ImportValue": "fjord-shared:ExportsOutputFnGetAttfjordredisfjordrediscluster656EBEC2RedisEndpointPortDEADC459"
+                }
+              },
+              {
+                "Name": "PORT",
+                "Value": "80"
+              }
+            ],
+            "Essential": true,
+            "Image": "dockervahid/fjord-server",
+            "LogConfiguration": {
+              "LogDriver": "awslogs",
+              "Options": {
+                "awslogs-group": {
+                  "Ref": "fjordLBFjordServerTaskDefwebLogGroupF512F37F"
+                },
+                "awslogs-stream-prefix": "fjord-LB-Fjord-Server",
+                "awslogs-region": {
+                  "Ref": "AWS::Region"
+                }
+              }
+            },
+            "Name": "web",
+            "PortMappings": [
+              {
+                "ContainerPort": 80,
+                "Protocol": "tcp"
+              }
+            ]
+          }
+        ],
+        "Cpu": "256",
+        "ExecutionRoleArn": {
+          "Fn::GetAtt": [
+            "fjordLBFjordServerTaskDefExecutionRole8C36CDB9",
+            "Arn"
+          ]
+        },
+        "Family": "fjordserverfjordLBFjordServerTaskDef7573DEB5",
+        "Memory": "512",
+        "NetworkMode": "awsvpc",
+        "RequiresCompatibilities": [
+          "FARGATE"
+        ],
+        "TaskRoleArn": {
+          "Fn::GetAtt": [
+            "fjordLBFjordServerTaskDefTaskRoleEFDA00E5",
+            "Arn"
+          ]
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "fjord-server/fjord-LB-Fjord-Server/TaskDef/Resource"
+      }
+    },
+    "fjordLBFjordServerTaskDefwebLogGroupF512F37F": {
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Retain",
+      "DeletionPolicy": "Retain",
+      "Metadata": {
+        "aws:cdk:path": "fjord-server/fjord-LB-Fjord-Server/TaskDef/web/LogGroup/Resource"
+      }
+    },
+    "fjordLBFjordServerTaskDefExecutionRole8C36CDB9": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "ecs-tasks.amazonaws.com"
+              }
+            }
+          ],
+          "Version": "2012-10-17"
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "fjord-server/fjord-LB-Fjord-Server/TaskDef/ExecutionRole/Resource"
+      }
+    },
+    "fjordLBFjordServerTaskDefExecutionRoleDefaultPolicy56C99D78": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents"
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "fjordLBFjordServerTaskDefwebLogGroupF512F37F",
+                  "Arn"
+                ]
+              }
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "PolicyName": "fjordLBFjordServerTaskDefExecutionRoleDefaultPolicy56C99D78",
+        "Roles": [
+          {
+            "Ref": "fjordLBFjordServerTaskDefExecutionRole8C36CDB9"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "fjord-server/fjord-LB-Fjord-Server/TaskDef/ExecutionRole/DefaultPolicy/Resource"
+      }
+    },
+    "fjordLBFjordServerServiceA36D2E6A": {
+      "Type": "AWS::ECS::Service",
+      "Properties": {
+        "Cluster": {
+          "Fn::ImportValue": "fjord-shared:ExportsOutputReffjordcluster4D7857B4B3743BE6"
+        },
+        "DeploymentConfiguration": {
+          "MaximumPercent": 200,
+          "MinimumHealthyPercent": 50
+        },
+        "DesiredCount": 1,
+        "EnableECSManagedTags": false,
+        "HealthCheckGracePeriodSeconds": 60,
+        "LaunchType": "FARGATE",
+        "LoadBalancers": [
+          {
+            "ContainerName": "web",
+            "ContainerPort": 80,
+            "TargetGroupArn": {
+              "Ref": "fjordLBFjordServerLBPublicListenerECSGroup24FB728E"
+            }
+          }
+        ],
+        "NetworkConfiguration": {
+          "AwsvpcConfiguration": {
+            "AssignPublicIp": "ENABLED",
+            "SecurityGroups": [
+              {
+                "Fn::GetAtt": [
+                  "fjordLBFjordServerServiceSecurityGroup8E1BB498",
+                  "GroupId"
+                ]
+              }
+            ],
+            "Subnets": [
+              {
+                "Fn::ImportValue": "fjord-shared:ExportsOutputReffjordvpcPublicSubnet1SubnetEBA3A1C2778A2985"
+              },
+              {
+                "Fn::ImportValue": "fjord-shared:ExportsOutputReffjordvpcPublicSubnet2Subnet58502962DDF28B2D"
+              }
+            ]
+          }
+        },
+        "TaskDefinition": {
+          "Ref": "fjordLBFjordServerTaskDefDB4C111C"
+        }
+      },
+      "DependsOn": [
+        "fjordLBFjordServerLBPublicListenerECSGroup24FB728E",
+        "fjordLBFjordServerLBPublicListener7B6D4414"
+      ],
+      "Metadata": {
+        "aws:cdk:path": "fjord-server/fjord-LB-Fjord-Server/Service/Service"
+      }
+    },
+    "fjordLBFjordServerServiceSecurityGroup8E1BB498": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "fjord-server/fjord-LB-Fjord-Server/Service/SecurityGroup",
+        "SecurityGroupEgress": [
+          {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow all outbound traffic by default",
+            "IpProtocol": "-1"
+          }
+        ],
+        "VpcId": {
+          "Fn::ImportValue": "fjord-shared:ExportsOutputReffjordvpcE7138455B515B4A8"
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "fjord-server/fjord-LB-Fjord-Server/Service/SecurityGroup/Resource"
+      }
+    },
+    "fjordLBFjordServerServiceSecurityGroupfromfjordserverfjordLBFjordServerLBSecurityGroupC501200380769971E3": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "IpProtocol": "tcp",
+        "Description": "Load balancer to target",
+        "FromPort": 80,
+        "GroupId": {
+          "Fn::GetAtt": [
+            "fjordLBFjordServerServiceSecurityGroup8E1BB498",
+            "GroupId"
+          ]
+        },
+        "SourceSecurityGroupId": {
+          "Fn::GetAtt": [
+            "fjordLBFjordServerLBSecurityGroup2F37C913",
+            "GroupId"
+          ]
+        },
+        "ToPort": 80
+      },
+      "Metadata": {
+        "aws:cdk:path": "fjord-server/fjord-LB-Fjord-Server/Service/SecurityGroup/from fjordserverfjordLBFjordServerLBSecurityGroupC5012003:80"
+      }
+    },
+    "fjordLBFjordServerServiceSecurityGroupfjordsharedfjordredisSGfjordredisC06251D9undefinedtoCB3DBF2A": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "IpProtocol": "tcp",
+        "Description": "from fjordserverfjordLBFjordServerServiceSecurityGroup8E728385:undefined",
+        "FromPort": 6379,
+        "GroupId": {
+          "Fn::ImportValue": "fjord-shared:ExportsOutputFnGetAttfjordredisSGfjordredis2A4BA9F2GroupIdD552C854"
+        },
+        "SourceSecurityGroupId": {
+          "Fn::GetAtt": [
+            "fjordLBFjordServerServiceSecurityGroup8E1BB498",
+            "GroupId"
+          ]
+        },
+        "ToPort": 6379
+      },
+      "Metadata": {
+        "aws:cdk:path": "fjord-server/fjord-LB-Fjord-Server/Service/SecurityGroup/fjordsharedfjordredisSGfjordredisC06251D9:undefined to"
+      }
+    },
+    "fjordLBFjordServerServiceTaskCountTarget9030FB2E": {
+      "Type": "AWS::ApplicationAutoScaling::ScalableTarget",
+      "Properties": {
+        "MaxCapacity": 2,
+        "MinCapacity": 1,
+        "ResourceId": {
+          "Fn::Join": [
+            "",
+            [
+              "service/",
+              {
+                "Fn::ImportValue": "fjord-shared:ExportsOutputReffjordcluster4D7857B4B3743BE6"
+              },
+              "/",
+              {
+                "Fn::GetAtt": [
+                  "fjordLBFjordServerServiceA36D2E6A",
+                  "Name"
+                ]
+              }
+            ]
+          ]
+        },
+        "RoleARN": {
+          "Fn::Join": [
+            "",
+            [
+              "arn:",
+              {
+                "Ref": "AWS::Partition"
+              },
+              ":iam::",
+              {
+                "Ref": "AWS::AccountId"
+              },
+              ":role/aws-service-role/ecs.application-autoscaling.amazonaws.com/AWSServiceRoleForApplicationAutoScaling_ECSService"
+            ]
+          ]
+        },
+        "ScalableDimension": "ecs:service:DesiredCount",
+        "ServiceNamespace": "ecs"
+      },
+      "Metadata": {
+        "aws:cdk:path": "fjord-server/fjord-LB-Fjord-Server/Service/TaskCount/Target/Resource"
+      }
+    },
+    "fjordLBFjordServerServiceTaskCountTargetMemoryScaling145544AA": {
+      "Type": "AWS::ApplicationAutoScaling::ScalingPolicy",
+      "Properties": {
+        "PolicyName": "fjordserverfjordLBFjordServerServiceTaskCountTargetMemoryScaling5D15A375",
+        "PolicyType": "TargetTrackingScaling",
+        "ScalingTargetId": {
+          "Ref": "fjordLBFjordServerServiceTaskCountTarget9030FB2E"
+        },
+        "TargetTrackingScalingPolicyConfiguration": {
+          "PredefinedMetricSpecification": {
+            "PredefinedMetricType": "ECSServiceAverageMemoryUtilization"
+          },
+          "ScaleInCooldown": 60,
+          "ScaleOutCooldown": 60,
+          "TargetValue": 35
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "fjord-server/fjord-LB-Fjord-Server/Service/TaskCount/Target/MemoryScaling/Resource"
+      }
+    },
+    "CDKMetadata": {
+      "Type": "AWS::CDK::Metadata",
+      "Properties": {
+        "Analytics": "v2:deflate64:H4sIAAAAAAAAE31S207DMAz9Ft6zjCLgGRgXIU0CrfuBLPUqb1lSJc7QVPXfcdJdWkA82T4+9rGdFLIo7uT11YP6ChNdbaetdh5kW5LSWzFb249ITSSxgOCi1yBmzgbyUVNKXtC15USFhM52IvVqQYdJo4jA2yAfm8agVik9d6p6UkZZDdWr8rUiKMHvkbuAUYFQG2asMgNtvb+R7d/VPqmO4iEPA4E9ck7+IL9kZaA372KTKIOwE6BZswQdPdLhTPkfeKk9hPALfrcZTz2DbI/rLlXYPsMabT5XLz9GnCWFPPEA+3GqLNS7peb9Vya3nbloqROodrJdOJN52X463vyQwt7rhHE1jzR39Xmhk88PeDmUiuQCK/BT8FHOUulceYgx0pul58/DBWVfd9EeAV3XCesqkJsw3Re3sriXxdUmIE48L4E7kIvefgOUjLZdpAIAAA=="
+      },
+      "Metadata": {
+        "aws:cdk:path": "fjord-server/CDKMetadata/Default"
+      },
+      "Condition": "CDKMetadataAvailable"
+    }
+  },
+  "Outputs": {
+    "fjordLBFjordServerLoadBalancerDNS5075A131": {
+      "Value": {
+        "Fn::GetAtt": [
+          "fjordLBFjordServerLB0CF0F6D3",
+          "DNSName"
+        ]
+      }
+    },
+    "fjordLBFjordServerServiceURLC8BD496F": {
+      "Value": {
+        "Fn::Join": [
+          "",
+          [
+            "http://",
+            {
+              "Fn::GetAtt": [
+                "fjordLBFjordServerLB0CF0F6D3",
+                "DNSName"
+              ]
+            }
+          ]
+        ]
+      }
+    }
+  },
+  "Conditions": {
+    "CDKMetadataAvailable": {
+      "Fn::Or": [
+        {
+          "Fn::Or": [
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "af-south-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "ap-east-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "ap-northeast-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "ap-northeast-2"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "ap-south-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "ap-southeast-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "ap-southeast-2"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "ca-central-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "cn-north-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "cn-northwest-1"
+              ]
+            }
+          ]
+        },
+        {
+          "Fn::Or": [
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "eu-central-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "eu-north-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "eu-south-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "eu-west-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "eu-west-2"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "eu-west-3"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "me-south-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "sa-east-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "us-east-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "us-east-2"
+              ]
+            }
+          ]
+        },
+        {
+          "Fn::Or": [
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "us-west-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "us-west-2"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

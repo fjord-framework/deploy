@@ -1,0 +1,23 @@
+{
+  "name": "Fjord App",
+  "server": {
+    "NAME": "Fjord-Server",
+    "JWT_KEY": "jqq247gjrhvariorrbgehtcwz5k0x0slmmxndnde",
+    "SEC_PER_PULSE": "30"
+  },
+  "consumerGroups": [
+    {
+      "NAME": "MyGroup",
+      "KAFKA_TOPICS": "stocks weather",
+      "API_TOPICS": "stocks weather",
+      "FROM_BEGINNINGS": "false true",
+      "BROKERS": "157.245.248.211:9093",
+      "SECURITY": "SASL-plain",
+      "KAFKA_USERNAME": "goMates",
+      "KAFKA_PASSWORD": "123",
+      "MEMBERS_COUNT": "1",
+      "CONCURRENT_PARTITIONS": "1",
+      "STARTING_DELAY_SEC": "60"
+    }
+  ]
+}

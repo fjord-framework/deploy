@@ -1,0 +1,808 @@
+{
+  "Resources": {
+    "FjordVPCD30C4152": {
+      "Type": "AWS::EC2::VPC",
+      "Properties": {
+        "CidrBlock": "10.0.0.0/16",
+        "EnableDnsHostnames": true,
+        "EnableDnsSupport": true,
+        "InstanceTenancy": "default",
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "shared-resources/FjordVPC"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "shared-resources/FjordVPC/Resource"
+      }
+    },
+    "FjordVPCPublicSubnet1Subnet466BC5A0": {
+      "Type": "AWS::EC2::Subnet",
+      "Properties": {
+        "CidrBlock": "10.0.0.0/18",
+        "VpcId": {
+          "Ref": "FjordVPCD30C4152"
+        },
+        "AvailabilityZone": {
+          "Fn::Select": [
+            0,
+            {
+              "Fn::GetAZs": ""
+            }
+          ]
+        },
+        "MapPublicIpOnLaunch": true,
+        "Tags": [
+          {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Public"
+          },
+          {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Public"
+          },
+          {
+            "Key": "Name",
+            "Value": "shared-resources/FjordVPC/PublicSubnet1"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "shared-resources/FjordVPC/PublicSubnet1/Subnet"
+      }
+    },
+    "FjordVPCPublicSubnet1RouteTableE0BC6ABD": {
+      "Type": "AWS::EC2::RouteTable",
+      "Properties": {
+        "VpcId": {
+          "Ref": "FjordVPCD30C4152"
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "shared-resources/FjordVPC/PublicSubnet1"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "shared-resources/FjordVPC/PublicSubnet1/RouteTable"
+      }
+    },
+    "FjordVPCPublicSubnet1RouteTableAssociationAC0B5C6F": {
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "FjordVPCPublicSubnet1RouteTableE0BC6ABD"
+        },
+        "SubnetId": {
+          "Ref": "FjordVPCPublicSubnet1Subnet466BC5A0"
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "shared-resources/FjordVPC/PublicSubnet1/RouteTableAssociation"
+      }
+    },
+    "FjordVPCPublicSubnet1DefaultRouteE54F789C": {
+      "Type": "AWS::EC2::Route",
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "FjordVPCPublicSubnet1RouteTableE0BC6ABD"
+        },
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "GatewayId": {
+          "Ref": "FjordVPCIGWA7EEE2F3"
+        }
+      },
+      "DependsOn": [
+        "FjordVPCVPCGWA8F0A2E5"
+      ],
+      "Metadata": {
+        "aws:cdk:path": "shared-resources/FjordVPC/PublicSubnet1/DefaultRoute"
+      }
+    },
+    "FjordVPCPublicSubnet1EIPB7F8351F": {
+      "Type": "AWS::EC2::EIP",
+      "Properties": {
+        "Domain": "vpc",
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "shared-resources/FjordVPC/PublicSubnet1"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "shared-resources/FjordVPC/PublicSubnet1/EIP"
+      }
+    },
+    "FjordVPCPublicSubnet1NATGateway51CD1359": {
+      "Type": "AWS::EC2::NatGateway",
+      "Properties": {
+        "SubnetId": {
+          "Ref": "FjordVPCPublicSubnet1Subnet466BC5A0"
+        },
+        "AllocationId": {
+          "Fn::GetAtt": [
+            "FjordVPCPublicSubnet1EIPB7F8351F",
+            "AllocationId"
+          ]
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "shared-resources/FjordVPC/PublicSubnet1"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "shared-resources/FjordVPC/PublicSubnet1/NATGateway"
+      }
+    },
+    "FjordVPCPublicSubnet2SubnetF727747B": {
+      "Type": "AWS::EC2::Subnet",
+      "Properties": {
+        "CidrBlock": "10.0.64.0/18",
+        "VpcId": {
+          "Ref": "FjordVPCD30C4152"
+        },
+        "AvailabilityZone": {
+          "Fn::Select": [
+            1,
+            {
+              "Fn::GetAZs": ""
+            }
+          ]
+        },
+        "MapPublicIpOnLaunch": true,
+        "Tags": [
+          {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Public"
+          },
+          {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Public"
+          },
+          {
+            "Key": "Name",
+            "Value": "shared-resources/FjordVPC/PublicSubnet2"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "shared-resources/FjordVPC/PublicSubnet2/Subnet"
+      }
+    },
+    "FjordVPCPublicSubnet2RouteTable3617DB12": {
+      "Type": "AWS::EC2::RouteTable",
+      "Properties": {
+        "VpcId": {
+          "Ref": "FjordVPCD30C4152"
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "shared-resources/FjordVPC/PublicSubnet2"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "shared-resources/FjordVPC/PublicSubnet2/RouteTable"
+      }
+    },
+    "FjordVPCPublicSubnet2RouteTableAssociationEB887A85": {
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "FjordVPCPublicSubnet2RouteTable3617DB12"
+        },
+        "SubnetId": {
+          "Ref": "FjordVPCPublicSubnet2SubnetF727747B"
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "shared-resources/FjordVPC/PublicSubnet2/RouteTableAssociation"
+      }
+    },
+    "FjordVPCPublicSubnet2DefaultRoute50B5F74F": {
+      "Type": "AWS::EC2::Route",
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "FjordVPCPublicSubnet2RouteTable3617DB12"
+        },
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "GatewayId": {
+          "Ref": "FjordVPCIGWA7EEE2F3"
+        }
+      },
+      "DependsOn": [
+        "FjordVPCVPCGWA8F0A2E5"
+      ],
+      "Metadata": {
+        "aws:cdk:path": "shared-resources/FjordVPC/PublicSubnet2/DefaultRoute"
+      }
+    },
+    "FjordVPCPublicSubnet2EIP092182E0": {
+      "Type": "AWS::EC2::EIP",
+      "Properties": {
+        "Domain": "vpc",
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "shared-resources/FjordVPC/PublicSubnet2"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "shared-resources/FjordVPC/PublicSubnet2/EIP"
+      }
+    },
+    "FjordVPCPublicSubnet2NATGateway86B003F0": {
+      "Type": "AWS::EC2::NatGateway",
+      "Properties": {
+        "SubnetId": {
+          "Ref": "FjordVPCPublicSubnet2SubnetF727747B"
+        },
+        "AllocationId": {
+          "Fn::GetAtt": [
+            "FjordVPCPublicSubnet2EIP092182E0",
+            "AllocationId"
+          ]
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "shared-resources/FjordVPC/PublicSubnet2"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "shared-resources/FjordVPC/PublicSubnet2/NATGateway"
+      }
+    },
+    "FjordVPCPrivateSubnet1Subnet11250ED8": {
+      "Type": "AWS::EC2::Subnet",
+      "Properties": {
+        "CidrBlock": "10.0.128.0/18",
+        "VpcId": {
+          "Ref": "FjordVPCD30C4152"
+        },
+        "AvailabilityZone": {
+          "Fn::Select": [
+            0,
+            {
+              "Fn::GetAZs": ""
+            }
+          ]
+        },
+        "MapPublicIpOnLaunch": false,
+        "Tags": [
+          {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Private"
+          },
+          {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Private"
+          },
+          {
+            "Key": "Name",
+            "Value": "shared-resources/FjordVPC/PrivateSubnet1"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "shared-resources/FjordVPC/PrivateSubnet1/Subnet"
+      }
+    },
+    "FjordVPCPrivateSubnet1RouteTable962CB671": {
+      "Type": "AWS::EC2::RouteTable",
+      "Properties": {
+        "VpcId": {
+          "Ref": "FjordVPCD30C4152"
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "shared-resources/FjordVPC/PrivateSubnet1"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "shared-resources/FjordVPC/PrivateSubnet1/RouteTable"
+      }
+    },
+    "FjordVPCPrivateSubnet1RouteTableAssociation92CC57D5": {
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "FjordVPCPrivateSubnet1RouteTable962CB671"
+        },
+        "SubnetId": {
+          "Ref": "FjordVPCPrivateSubnet1Subnet11250ED8"
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "shared-resources/FjordVPC/PrivateSubnet1/RouteTableAssociation"
+      }
+    },
+    "FjordVPCPrivateSubnet1DefaultRouteDE5E31A8": {
+      "Type": "AWS::EC2::Route",
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "FjordVPCPrivateSubnet1RouteTable962CB671"
+        },
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "NatGatewayId": {
+          "Ref": "FjordVPCPublicSubnet1NATGateway51CD1359"
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "shared-resources/FjordVPC/PrivateSubnet1/DefaultRoute"
+      }
+    },
+    "FjordVPCPrivateSubnet2Subnet525813D5": {
+      "Type": "AWS::EC2::Subnet",
+      "Properties": {
+        "CidrBlock": "10.0.192.0/18",
+        "VpcId": {
+          "Ref": "FjordVPCD30C4152"
+        },
+        "AvailabilityZone": {
+          "Fn::Select": [
+            1,
+            {
+              "Fn::GetAZs": ""
+            }
+          ]
+        },
+        "MapPublicIpOnLaunch": false,
+        "Tags": [
+          {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Private"
+          },
+          {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Private"
+          },
+          {
+            "Key": "Name",
+            "Value": "shared-resources/FjordVPC/PrivateSubnet2"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "shared-resources/FjordVPC/PrivateSubnet2/Subnet"
+      }
+    },
+    "FjordVPCPrivateSubnet2RouteTable5778F98A": {
+      "Type": "AWS::EC2::RouteTable",
+      "Properties": {
+        "VpcId": {
+          "Ref": "FjordVPCD30C4152"
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "shared-resources/FjordVPC/PrivateSubnet2"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "shared-resources/FjordVPC/PrivateSubnet2/RouteTable"
+      }
+    },
+    "FjordVPCPrivateSubnet2RouteTableAssociationC8CBDA4C": {
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "FjordVPCPrivateSubnet2RouteTable5778F98A"
+        },
+        "SubnetId": {
+          "Ref": "FjordVPCPrivateSubnet2Subnet525813D5"
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "shared-resources/FjordVPC/PrivateSubnet2/RouteTableAssociation"
+      }
+    },
+    "FjordVPCPrivateSubnet2DefaultRoute06AA35F5": {
+      "Type": "AWS::EC2::Route",
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "FjordVPCPrivateSubnet2RouteTable5778F98A"
+        },
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "NatGatewayId": {
+          "Ref": "FjordVPCPublicSubnet2NATGateway86B003F0"
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "shared-resources/FjordVPC/PrivateSubnet2/DefaultRoute"
+      }
+    },
+    "FjordVPCIGWA7EEE2F3": {
+      "Type": "AWS::EC2::InternetGateway",
+      "Properties": {
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "shared-resources/FjordVPC"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "shared-resources/FjordVPC/IGW"
+      }
+    },
+    "FjordVPCVPCGWA8F0A2E5": {
+      "Type": "AWS::EC2::VPCGatewayAttachment",
+      "Properties": {
+        "VpcId": {
+          "Ref": "FjordVPCD30C4152"
+        },
+        "InternetGatewayId": {
+          "Ref": "FjordVPCIGWA7EEE2F3"
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "shared-resources/FjordVPC/VPCGW"
+      }
+    },
+    "FjordCluster6B6BC75F": {
+      "Type": "AWS::ECS::Cluster",
+      "Metadata": {
+        "aws:cdk:path": "shared-resources/FjordCluster/Resource"
+      }
+    },
+    "redisredissubnetgroup11AF7B54": {
+      "Type": "AWS::ElastiCache::SubnetGroup",
+      "Properties": {
+        "Description": "Subnets used for redis cache redis",
+        "SubnetIds": [
+          {
+            "Ref": "FjordVPCPrivateSubnet1Subnet11250ED8"
+          },
+          {
+            "Ref": "FjordVPCPrivateSubnet2Subnet525813D5"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "shared-resources/redis/redis-subnet-group"
+      }
+    },
+    "redisSGid2F2EFA8F": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "shared-resources/redis/$SG-{id}",
+        "SecurityGroupEgress": [
+          {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow all outbound traffic by default",
+            "IpProtocol": "-1"
+          }
+        ],
+        "VpcId": {
+          "Ref": "FjordVPCD30C4152"
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "shared-resources/redis/$SG-{id}/Resource"
+      }
+    },
+    "redisrediscluster07227F9D": {
+      "Type": "AWS::ElastiCache::CacheCluster",
+      "Properties": {
+        "CacheNodeType": "cache.t2.micro",
+        "Engine": "redis",
+        "NumCacheNodes": 1,
+        "AutoMinorVersionUpgrade": true,
+        "CacheSubnetGroupName": {
+          "Ref": "redisredissubnetgroup11AF7B54"
+        },
+        "VpcSecurityGroupIds": [
+          {
+            "Fn::GetAtt": [
+              "redisSGid2F2EFA8F",
+              "GroupId"
+            ]
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "shared-resources/redis/redis-cluster"
+      }
+    },
+    "CDKMetadata": {
+      "Type": "AWS::CDK::Metadata",
+      "Properties": {
+        "Analytics": "v2:deflate64:H4sIAAAAAAAAE01QQW7CMBB8C3djalR6LrIqxKWKEsTd2SyqIdjIXoOQlb/XTkrc045nxqPZFVyIDX9bfKqHX0J3WUWwDnlsSMGF1ehtcIBMWuPJBSAmT6awJ5OETpO2ZmA5ISKseTzeIGvHSrIqtL2GJrQGx78F1TYQHlTbY+ELt/XeglY5eTZn8LWv8vhWtFOED/VkldP3BEvw3hC6hF+Gqcnfa0tpsZ8rGmINQnCanjtnw23s8J8YGILnUfbBp7hx1QkmoVeeNKScdKi5+xwjs/AyDwMztkN+9qu7eOfig4vF2Wu9dMGQviKvp/kLHo9hJIgBAAA="
+      },
+      "Metadata": {
+        "aws:cdk:path": "shared-resources/CDKMetadata/Default"
+      },
+      "Condition": "CDKMetadataAvailable"
+    }
+  },
+  "Conditions": {
+    "CDKMetadataAvailable": {
+      "Fn::Or": [
+        {
+          "Fn::Or": [
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "af-south-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "ap-east-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "ap-northeast-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "ap-northeast-2"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "ap-south-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "ap-southeast-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "ap-southeast-2"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "ca-central-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "cn-north-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "cn-northwest-1"
+              ]
+            }
+          ]
+        },
+        {
+          "Fn::Or": [
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "eu-central-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "eu-north-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "eu-south-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "eu-west-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "eu-west-2"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "eu-west-3"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "me-south-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "sa-east-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "us-east-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "us-east-2"
+              ]
+            }
+          ]
+        },
+        {
+          "Fn::Or": [
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "us-west-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "us-west-2"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "Outputs": {
+    "ExportsOutputRefFjordVPCPublicSubnet1Subnet466BC5A031772DF0": {
+      "Value": {
+        "Ref": "FjordVPCPublicSubnet1Subnet466BC5A0"
+      },
+      "Export": {
+        "Name": "shared-resources:ExportsOutputRefFjordVPCPublicSubnet1Subnet466BC5A031772DF0"
+      }
+    },
+    "ExportsOutputRefFjordVPCPublicSubnet2SubnetF727747BA99F6C98": {
+      "Value": {
+        "Ref": "FjordVPCPublicSubnet2SubnetF727747B"
+      },
+      "Export": {
+        "Name": "shared-resources:ExportsOutputRefFjordVPCPublicSubnet2SubnetF727747BA99F6C98"
+      }
+    },
+    "ExportsOutputRefFjordVPCD30C4152319EEF9B": {
+      "Value": {
+        "Ref": "FjordVPCD30C4152"
+      },
+      "Export": {
+        "Name": "shared-resources:ExportsOutputRefFjordVPCD30C4152319EEF9B"
+      }
+    },
+    "ExportsOutputFnGetAttredisrediscluster07227F9DRedisEndpointAddressDD1FF1F7": {
+      "Value": {
+        "Fn::GetAtt": [
+          "redisrediscluster07227F9D",
+          "RedisEndpoint.Address"
+        ]
+      },
+      "Export": {
+        "Name": "shared-resources:ExportsOutputFnGetAttredisrediscluster07227F9DRedisEndpointAddressDD1FF1F7"
+      }
+    },
+    "ExportsOutputFnGetAttredisrediscluster07227F9DRedisEndpointPort3B77AD65": {
+      "Value": {
+        "Fn::GetAtt": [
+          "redisrediscluster07227F9D",
+          "RedisEndpoint.Port"
+        ]
+      },
+      "Export": {
+        "Name": "shared-resources:ExportsOutputFnGetAttredisrediscluster07227F9DRedisEndpointPort3B77AD65"
+      }
+    },
+    "ExportsOutputRefFjordCluster6B6BC75F50B95350": {
+      "Value": {
+        "Ref": "FjordCluster6B6BC75F"
+      },
+      "Export": {
+        "Name": "shared-resources:ExportsOutputRefFjordCluster6B6BC75F50B95350"
+      }
+    },
+    "ExportsOutputFnGetAttredisSGid2F2EFA8FGroupIdCB0841DA": {
+      "Value": {
+        "Fn::GetAtt": [
+          "redisSGid2F2EFA8F",
+          "GroupId"
+        ]
+      },
+      "Export": {
+        "Name": "shared-resources:ExportsOutputFnGetAttredisSGid2F2EFA8FGroupIdCB0841DA"
+      }
+    },
+    "ExportsOutputRefFjordVPCPrivateSubnet1Subnet11250ED803D427E4": {
+      "Value": {
+        "Ref": "FjordVPCPrivateSubnet1Subnet11250ED8"
+      },
+      "Export": {
+        "Name": "shared-resources:ExportsOutputRefFjordVPCPrivateSubnet1Subnet11250ED803D427E4"
+      }
+    },
+    "ExportsOutputRefFjordVPCPrivateSubnet2Subnet525813D5DD885C4C": {
+      "Value": {
+        "Ref": "FjordVPCPrivateSubnet2Subnet525813D5"
+      },
+      "Export": {
+        "Name": "shared-resources:ExportsOutputRefFjordVPCPrivateSubnet2Subnet525813D5DD885C4C"
+      }
+    }
+  }
+}

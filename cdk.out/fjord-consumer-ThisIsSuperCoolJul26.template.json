@@ -1,0 +1,480 @@
+{
+  "Resources": {
+    "fjordtaskThisIsSuperCoolJul26TaskRole8BAC16B5": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "ecs-tasks.amazonaws.com"
+              }
+            }
+          ],
+          "Version": "2012-10-17"
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "fjord-consumer-ThisIsSuperCoolJul26/fjord-task-ThisIsSuperCoolJul26/TaskRole/Resource"
+      }
+    },
+    "fjordtaskThisIsSuperCoolJul26EB442107": {
+      "Type": "AWS::ECS::TaskDefinition",
+      "Properties": {
+        "ContainerDefinitions": [
+          {
+            "Environment": [
+              {
+                "Name": "CLIENT",
+                "Value": "Fjord-ThisIsSuperCoolJul26"
+              },
+              {
+                "Name": "CONSUMER_GROUP",
+                "Value": "fjord-ThisIsSuperCoolJul26"
+              },
+              {
+                "Name": "BROKERS",
+                "Value": "157.245.248.211:9093"
+              },
+              {
+                "Name": "SECURITY",
+                "Value": "SASL-plain"
+              },
+              {
+                "Name": "KAFKA_USERNAME",
+                "Value": "goMates"
+              },
+              {
+                "Name": "KAFKA_PASSWORD",
+                "Value": "123"
+              },
+              {
+                "Name": "KAFKA_TOPICS",
+                "Value": "stocks1 stocks2 stocks weather"
+              },
+              {
+                "Name": "API_TOPICS",
+                "Value": "stocks stocks stocks weather"
+              },
+              {
+                "Name": "FROM_BEGINNINGS",
+                "Value": "false false false true"
+              },
+              {
+                "Name": "CONCURRENT_PARTITIONS",
+                "Value": "1"
+              },
+              {
+                "Name": "STARTING_DELAY_SEC",
+                "Value": "120"
+              },
+              {
+                "Name": "REDIS_HOST",
+                "Value": {
+                  "Fn::ImportValue": "fjord-shared:ExportsOutputFnGetAttfjordredisfjordrediscluster656EBEC2RedisEndpointAddressDBB68F11"
+                }
+              },
+              {
+                "Name": "REDIS_PORT",
+                "Value": {
+                  "Fn::ImportValue": "fjord-shared:ExportsOutputFnGetAttfjordredisfjordrediscluster656EBEC2RedisEndpointPortDEADC459"
+                }
+              }
+            ],
+            "Essential": true,
+            "Image": "dockervahid/fjord-source",
+            "LogConfiguration": {
+              "LogDriver": "awslogs",
+              "Options": {
+                "awslogs-group": {
+                  "Ref": "fjordtaskThisIsSuperCoolJul26fjordconsumerLogGroup10B56B39"
+                },
+                "awslogs-stream-prefix": "fjord-consumer-ThisIsSuperCoolJul26",
+                "awslogs-region": {
+                  "Ref": "AWS::Region"
+                }
+              }
+            },
+            "Name": "fjord-consumer",
+            "PortMappings": [
+              {
+                "ContainerPort": 8080,
+                "Protocol": "tcp"
+              }
+            ]
+          }
+        ],
+        "Cpu": "256",
+        "ExecutionRoleArn": {
+          "Fn::GetAtt": [
+            "fjordtaskThisIsSuperCoolJul26ExecutionRole3024F1D2",
+            "Arn"
+          ]
+        },
+        "Family": "fjordconsumerThisIsSuperCoolJul26fjordtaskThisIsSuperCoolJul26C0254FD3",
+        "Memory": "512",
+        "NetworkMode": "awsvpc",
+        "RequiresCompatibilities": [
+          "FARGATE"
+        ],
+        "TaskRoleArn": {
+          "Fn::GetAtt": [
+            "fjordtaskThisIsSuperCoolJul26TaskRole8BAC16B5",
+            "Arn"
+          ]
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "fjord-consumer-ThisIsSuperCoolJul26/fjord-task-ThisIsSuperCoolJul26/Resource"
+      }
+    },
+    "fjordtaskThisIsSuperCoolJul26fjordconsumerLogGroup10B56B39": {
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Retain",
+      "DeletionPolicy": "Retain",
+      "Metadata": {
+        "aws:cdk:path": "fjord-consumer-ThisIsSuperCoolJul26/fjord-task-ThisIsSuperCoolJul26/fjord-consumer/LogGroup/Resource"
+      }
+    },
+    "fjordtaskThisIsSuperCoolJul26ExecutionRole3024F1D2": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "ecs-tasks.amazonaws.com"
+              }
+            }
+          ],
+          "Version": "2012-10-17"
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "fjord-consumer-ThisIsSuperCoolJul26/fjord-task-ThisIsSuperCoolJul26/ExecutionRole/Resource"
+      }
+    },
+    "fjordtaskThisIsSuperCoolJul26ExecutionRoleDefaultPolicy6028C1FA": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents"
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "fjordtaskThisIsSuperCoolJul26fjordconsumerLogGroup10B56B39",
+                  "Arn"
+                ]
+              }
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "PolicyName": "fjordtaskThisIsSuperCoolJul26ExecutionRoleDefaultPolicy6028C1FA",
+        "Roles": [
+          {
+            "Ref": "fjordtaskThisIsSuperCoolJul26ExecutionRole3024F1D2"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "fjord-consumer-ThisIsSuperCoolJul26/fjord-task-ThisIsSuperCoolJul26/ExecutionRole/DefaultPolicy/Resource"
+      }
+    },
+    "fjordserviceThisIsSuperCoolJul26Service573D86B9": {
+      "Type": "AWS::ECS::Service",
+      "Properties": {
+        "Cluster": {
+          "Fn::ImportValue": "fjord-shared:ExportsOutputReffjordcluster4D7857B4B3743BE6"
+        },
+        "DeploymentConfiguration": {
+          "MaximumPercent": 200,
+          "MinimumHealthyPercent": 50
+        },
+        "DesiredCount": 1,
+        "EnableECSManagedTags": false,
+        "LaunchType": "FARGATE",
+        "NetworkConfiguration": {
+          "AwsvpcConfiguration": {
+            "AssignPublicIp": "DISABLED",
+            "SecurityGroups": [
+              {
+                "Fn::GetAtt": [
+                  "fjordserviceThisIsSuperCoolJul26SecurityGroup2C3E061D",
+                  "GroupId"
+                ]
+              }
+            ],
+            "Subnets": [
+              {
+                "Fn::ImportValue": "fjord-shared:ExportsOutputReffjordvpcPrivateSubnet1Subnet7480DC1429C0C0FE"
+              },
+              {
+                "Fn::ImportValue": "fjord-shared:ExportsOutputReffjordvpcPrivateSubnet2Subnet603987084E6F8DF6"
+              }
+            ]
+          }
+        },
+        "TaskDefinition": {
+          "Ref": "fjordtaskThisIsSuperCoolJul26EB442107"
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "fjord-consumer-ThisIsSuperCoolJul26/fjord-service-ThisIsSuperCoolJul26/Service"
+      }
+    },
+    "fjordserviceThisIsSuperCoolJul26SecurityGroup2C3E061D": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "fjord-consumer-ThisIsSuperCoolJul26/fjord-service-ThisIsSuperCoolJul26/SecurityGroup",
+        "SecurityGroupEgress": [
+          {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow all outbound traffic by default",
+            "IpProtocol": "-1"
+          }
+        ],
+        "VpcId": {
+          "Fn::ImportValue": "fjord-shared:ExportsOutputReffjordvpcE7138455B515B4A8"
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "fjord-consumer-ThisIsSuperCoolJul26/fjord-service-ThisIsSuperCoolJul26/SecurityGroup/Resource"
+      }
+    },
+    "fjordserviceThisIsSuperCoolJul26SecurityGroupfjordsharedfjordredisSGfjordredisC06251D9undefinedtoC61801C9": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "IpProtocol": "tcp",
+        "Description": "from fjordconsumerThisIsSuperCoolJul26fjordserviceThisIsSuperCoolJul26SecurityGroup53B2FA4B:undefined",
+        "FromPort": 6379,
+        "GroupId": {
+          "Fn::ImportValue": "fjord-shared:ExportsOutputFnGetAttfjordredisSGfjordredis2A4BA9F2GroupIdD552C854"
+        },
+        "SourceSecurityGroupId": {
+          "Fn::GetAtt": [
+            "fjordserviceThisIsSuperCoolJul26SecurityGroup2C3E061D",
+            "GroupId"
+          ]
+        },
+        "ToPort": 6379
+      },
+      "Metadata": {
+        "aws:cdk:path": "fjord-consumer-ThisIsSuperCoolJul26/fjord-service-ThisIsSuperCoolJul26/SecurityGroup/fjordsharedfjordredisSGfjordredisC06251D9:undefined to"
+      }
+    },
+    "CDKMetadata": {
+      "Type": "AWS::CDK::Metadata",
+      "Properties": {
+        "Analytics": "v2:deflate64:H4sIAAAAAAAAE31PTWvDMAz9Lb277ly2nQctLYUdRro/YBw1qEmlIdkdxfi/L066MXbY6T29DyQ569yTfVi8+E9dhrZf5cACNh+jD73ZMGmUFKLZnKgB5SQBKh+NFiMyFVOLGYLavPPS+QjvXvstnJCmQE3/VZiiRwL5pd27R5ArzivutBj0F5sbHiZ1wjceMNzqOLNiBu7GA1652wunj+p882IgrMd/ICTBePvx/xcO1AmollIMcQv2rKure7Tu2brFWRGXkijiBWwz4xfr2P+dRwEAAA=="
+      },
+      "Metadata": {
+        "aws:cdk:path": "fjord-consumer-ThisIsSuperCoolJul26/CDKMetadata/Default"
+      },
+      "Condition": "CDKMetadataAvailable"
+    }
+  },
+  "Conditions": {
+    "CDKMetadataAvailable": {
+      "Fn::Or": [
+        {
+          "Fn::Or": [
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "af-south-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "ap-east-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "ap-northeast-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "ap-northeast-2"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "ap-south-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "ap-southeast-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "ap-southeast-2"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "ca-central-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "cn-north-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "cn-northwest-1"
+              ]
+            }
+          ]
+        },
+        {
+          "Fn::Or": [
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "eu-central-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "eu-north-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "eu-south-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "eu-west-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "eu-west-2"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "eu-west-3"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "me-south-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "sa-east-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "us-east-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "us-east-2"
+              ]
+            }
+          ]
+        },
+        {
+          "Fn::Or": [
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "us-west-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "us-west-2"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

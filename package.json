@@ -1,0 +1,25 @@
+{
+  "name": "fjord_app",
+  "version": "0.1.0",
+  "bin": {
+    "fjord_app": "bin/fjord_app.js"
+  },
+  "scripts": {
+    "build": "echo \"The build step is not required when using JavaScript!\" && exit 0",
+    "cdk": "cdk",
+    "test": "jest"
+  },
+  "devDependencies": {
+    "@aws-cdk/assert": "1.114.0",
+    "aws-cdk": "1.114.0",
+    "jest": "^26.4.2"
+  },
+  "dependencies": {
+    "@aws-cdk/aws-ec2": "^1.115.0",
+    "@aws-cdk/aws-ecs": "^1.115.0",
+    "@aws-cdk/aws-ecs-patterns": "^1.115.0",
+    "@aws-cdk/aws-elasticache": "^1.115.0",
+    "@aws-cdk/aws-s3": "^1.114.0",
+    "@aws-cdk/core": "^1.115.0"
+  }
+}
