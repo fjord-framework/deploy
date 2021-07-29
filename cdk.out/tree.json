@@ -1138,7 +1138,7 @@
                         "containerDefinitions": [
                           {
                             "essential": true,
-                            "image": "dockervahid/fjord-server",
+                            "image": "dockervahid/server3",
                             "name": "web",
                             "portMappings": [
                               {
@@ -1166,6 +1166,10 @@
                               {
                                 "name": "SEC_PER_PULSE",
                                 "value": "30"
+                              },
+                              {
+                                "name": "API_TOPICS",
+                                "value": "stocks weather"
                               },
                               {
                                 "name": "REDIS_HOST",
@@ -1349,7 +1353,7 @@
                           "maximumPercent": 200,
                           "minimumHealthyPercent": 50
                         },
-                        "desiredCount": 1,
+                        "desiredCount": 2,
                         "enableEcsManagedTags": false,
                         "healthCheckGracePeriodSeconds": 60,
                         "launchType": "FARGATE",
@@ -1504,8 +1508,8 @@
                             "attributes": {
                               "aws:cdk:cloudformation:type": "AWS::ApplicationAutoScaling::ScalableTarget",
                               "aws:cdk:cloudformation:props": {
-                                "maxCapacity": 2,
-                                "minCapacity": 1,
+                                "maxCapacity": 3,
+                                "minCapacity": 2,
                                 "resourceId": {
                                   "Fn::Join": [
                                     "",
@@ -1641,21 +1645,21 @@
           "version": "1.115.0"
         }
       },
-      "fjord-consumer-MyGroup": {
-        "id": "fjord-consumer-MyGroup",
-        "path": "fjord-consumer-MyGroup",
+      "fjord-consumer-NewestGroup": {
+        "id": "fjord-consumer-NewestGroup",
+        "path": "fjord-consumer-NewestGroup",
         "children": {
-          "fjord-task-MyGroup": {
-            "id": "fjord-task-MyGroup",
-            "path": "fjord-consumer-MyGroup/fjord-task-MyGroup",
+          "fjord-task-NewestGroup": {
+            "id": "fjord-task-NewestGroup",
+            "path": "fjord-consumer-NewestGroup/fjord-task-NewestGroup",
             "children": {
               "TaskRole": {
                 "id": "TaskRole",
-                "path": "fjord-consumer-MyGroup/fjord-task-MyGroup/TaskRole",
+                "path": "fjord-consumer-NewestGroup/fjord-task-NewestGroup/TaskRole",
                 "children": {
                   "Resource": {
                     "id": "Resource",
-                    "path": "fjord-consumer-MyGroup/fjord-task-MyGroup/TaskRole/Resource",
+                    "path": "fjord-consumer-NewestGroup/fjord-task-NewestGroup/TaskRole/Resource",
                     "attributes": {
                       "aws:cdk:cloudformation:type": "AWS::IAM::Role",
                       "aws:cdk:cloudformation:props": {
@@ -1686,14 +1690,14 @@
               },
               "Resource": {
                 "id": "Resource",
-                "path": "fjord-consumer-MyGroup/fjord-task-MyGroup/Resource",
+                "path": "fjord-consumer-NewestGroup/fjord-task-NewestGroup/Resource",
                 "attributes": {
                   "aws:cdk:cloudformation:type": "AWS::ECS::TaskDefinition",
                   "aws:cdk:cloudformation:props": {
                     "containerDefinitions": [
                       {
                         "essential": true,
-                        "image": "dockervahid/fjord-consumer",
+                        "image": "dockervahid/consumer3",
                         "name": "fjord-consumer",
                         "portMappings": [
                           {
@@ -1705,9 +1709,9 @@
                           "logDriver": "awslogs",
                           "options": {
                             "awslogs-group": {
-                              "Ref": "fjordtaskMyGroupfjordconsumerLogGroupF6459868"
+                              "Ref": "fjordtaskNewestGroupfjordconsumerLogGroup69DD83A2"
                             },
-                            "awslogs-stream-prefix": "fjord-consumer-MyGroup",
+                            "awslogs-stream-prefix": "fjord-consumer-NewestGroup",
                             "awslogs-region": {
                               "Ref": "AWS::Region"
                             }
@@ -1716,11 +1720,11 @@
                         "environment": [
                           {
                             "name": "CLIENT",
-                            "value": "Fjord-MyGroup"
+                            "value": "Fjord-NewestGroup"
                           },
                           {
                             "name": "CONSUMER_GROUP",
-                            "value": "fjord-MyGroup"
+                            "value": "fjord-NewestGroup"
                           },
                           {
                             "name": "BROKERS",
@@ -1748,7 +1752,7 @@
                           },
                           {
                             "name": "FROM_BEGINNINGS",
-                            "value": "false true"
+                            "value": "false false"
                           },
                           {
                             "name": "CONCURRENT_PARTITIONS",
@@ -1776,11 +1780,11 @@
                     "cpu": "256",
                     "executionRoleArn": {
                       "Fn::GetAtt": [
-                        "fjordtaskMyGroupExecutionRole51628C7A",
+                        "fjordtaskNewestGroupExecutionRole6B926CA9",
                         "Arn"
                       ]
                     },
-                    "family": "fjordconsumerMyGroupfjordtaskMyGroupE558C568",
+                    "family": "fjordconsumerNewestGroupfjordtaskNewestGroup0197690D",
                     "memory": "512",
                     "networkMode": "awsvpc",
                     "requiresCompatibilities": [
@@ -1788,7 +1792,7 @@
                     ],
                     "taskRoleArn": {
                       "Fn::GetAtt": [
-                        "fjordtaskMyGroupTaskRole88F57DB8",
+                        "fjordtaskNewestGroupTaskRole3E7B5F17",
                         "Arn"
                       ]
                     }
@@ -1801,15 +1805,15 @@
               },
               "fjord-consumer": {
                 "id": "fjord-consumer",
-                "path": "fjord-consumer-MyGroup/fjord-task-MyGroup/fjord-consumer",
+                "path": "fjord-consumer-NewestGroup/fjord-task-NewestGroup/fjord-consumer",
                 "children": {
                   "LogGroup": {
                     "id": "LogGroup",
-                    "path": "fjord-consumer-MyGroup/fjord-task-MyGroup/fjord-consumer/LogGroup",
+                    "path": "fjord-consumer-NewestGroup/fjord-task-NewestGroup/fjord-consumer/LogGroup",
                     "children": {
                       "Resource": {
                         "id": "Resource",
-                        "path": "fjord-consumer-MyGroup/fjord-task-MyGroup/fjord-consumer/LogGroup/Resource",
+                        "path": "fjord-consumer-NewestGroup/fjord-task-NewestGroup/fjord-consumer/LogGroup/Resource",
                         "attributes": {
                           "aws:cdk:cloudformation:type": "AWS::Logs::LogGroup",
                           "aws:cdk:cloudformation:props": {}
@@ -1833,11 +1837,11 @@
               },
               "ExecutionRole": {
                 "id": "ExecutionRole",
-                "path": "fjord-consumer-MyGroup/fjord-task-MyGroup/ExecutionRole",
+                "path": "fjord-consumer-NewestGroup/fjord-task-NewestGroup/ExecutionRole",
                 "children": {
                   "Resource": {
                     "id": "Resource",
-                    "path": "fjord-consumer-MyGroup/fjord-task-MyGroup/ExecutionRole/Resource",
+                    "path": "fjord-consumer-NewestGroup/fjord-task-NewestGroup/ExecutionRole/Resource",
                     "attributes": {
                       "aws:cdk:cloudformation:type": "AWS::IAM::Role",
                       "aws:cdk:cloudformation:props": {
@@ -1862,11 +1866,11 @@
                   },
                   "DefaultPolicy": {
                     "id": "DefaultPolicy",
-                    "path": "fjord-consumer-MyGroup/fjord-task-MyGroup/ExecutionRole/DefaultPolicy",
+                    "path": "fjord-consumer-NewestGroup/fjord-task-NewestGroup/ExecutionRole/DefaultPolicy",
                     "children": {
                       "Resource": {
                         "id": "Resource",
-                        "path": "fjord-consumer-MyGroup/fjord-task-MyGroup/ExecutionRole/DefaultPolicy/Resource",
+                        "path": "fjord-consumer-NewestGroup/fjord-task-NewestGroup/ExecutionRole/DefaultPolicy/Resource",
                         "attributes": {
                           "aws:cdk:cloudformation:type": "AWS::IAM::Policy",
                           "aws:cdk:cloudformation:props": {
@@ -1880,7 +1884,7 @@
                                   "Effect": "Allow",
                                   "Resource": {
                                     "Fn::GetAtt": [
-                                      "fjordtaskMyGroupfjordconsumerLogGroupF6459868",
+                                      "fjordtaskNewestGroupfjordconsumerLogGroup69DD83A2",
                                       "Arn"
                                     ]
                                   }
@@ -1888,10 +1892,10 @@
                               ],
                               "Version": "2012-10-17"
                             },
-                            "policyName": "fjordtaskMyGroupExecutionRoleDefaultPolicy205E6C22",
+                            "policyName": "fjordtaskNewestGroupExecutionRoleDefaultPolicy0E28B5C9",
                             "roles": [
                               {
-                                "Ref": "fjordtaskMyGroupExecutionRole51628C7A"
+                                "Ref": "fjordtaskNewestGroupExecutionRole6B926CA9"
                               }
                             ]
                           }
@@ -1919,13 +1923,13 @@
               "version": "1.115.0"
             }
           },
-          "fjord-service-MyGroup": {
-            "id": "fjord-service-MyGroup",
-            "path": "fjord-consumer-MyGroup/fjord-service-MyGroup",
+          "fjord-service-NewestGroup": {
+            "id": "fjord-service-NewestGroup",
+            "path": "fjord-consumer-NewestGroup/fjord-service-NewestGroup",
             "children": {
               "Service": {
                 "id": "Service",
-                "path": "fjord-consumer-MyGroup/fjord-service-MyGroup/Service",
+                "path": "fjord-consumer-NewestGroup/fjord-service-NewestGroup/Service",
                 "attributes": {
                   "aws:cdk:cloudformation:type": "AWS::ECS::Service",
                   "aws:cdk:cloudformation:props": {
@@ -1953,7 +1957,7 @@
                         "securityGroups": [
                           {
                             "Fn::GetAtt": [
-                              "fjordserviceMyGroupSecurityGroupEFD57A33",
+                              "fjordserviceNewestGroupSecurityGroup6D328DF4",
                               "GroupId"
                             ]
                           }
@@ -1961,7 +1965,7 @@
                       }
                     },
                     "taskDefinition": {
-                      "Ref": "fjordtaskMyGroupFBFA594D"
+                      "Ref": "fjordtaskNewestGroup06830846"
                     }
                   }
                 },
@@ -1972,15 +1976,15 @@
               },
               "SecurityGroup": {
                 "id": "SecurityGroup",
-                "path": "fjord-consumer-MyGroup/fjord-service-MyGroup/SecurityGroup",
+                "path": "fjord-consumer-NewestGroup/fjord-service-NewestGroup/SecurityGroup",
                 "children": {
                   "Resource": {
                     "id": "Resource",
-                    "path": "fjord-consumer-MyGroup/fjord-service-MyGroup/SecurityGroup/Resource",
+                    "path": "fjord-consumer-NewestGroup/fjord-service-NewestGroup/SecurityGroup/Resource",
                     "attributes": {
                       "aws:cdk:cloudformation:type": "AWS::EC2::SecurityGroup",
                       "aws:cdk:cloudformation:props": {
-                        "groupDescription": "fjord-consumer-MyGroup/fjord-service-MyGroup/SecurityGroup",
+                        "groupDescription": "fjord-consumer-NewestGroup/fjord-service-NewestGroup/SecurityGroup",
                         "securityGroupEgress": [
                           {
                             "cidrIp": "0.0.0.0/0",
@@ -2000,19 +2004,19 @@
                   },
                   "fjordsharedfjordredisSGfjordredisC06251D9:undefined to": {
                     "id": "fjordsharedfjordredisSGfjordredisC06251D9:undefined to",
-                    "path": "fjord-consumer-MyGroup/fjord-service-MyGroup/SecurityGroup/fjordsharedfjordredisSGfjordredisC06251D9:undefined to",
+                    "path": "fjord-consumer-NewestGroup/fjord-service-NewestGroup/SecurityGroup/fjordsharedfjordredisSGfjordredisC06251D9:undefined to",
                     "attributes": {
                       "aws:cdk:cloudformation:type": "AWS::EC2::SecurityGroupIngress",
                       "aws:cdk:cloudformation:props": {
                         "ipProtocol": "tcp",
-                        "description": "from fjordconsumerMyGroupfjordserviceMyGroupSecurityGroupBE557E84:undefined",
+                        "description": "from fjordconsumerNewestGroupfjordserviceNewestGroupSecurityGroupD059AA5E:undefined",
                         "fromPort": 6379,
                         "groupId": {
                           "Fn::ImportValue": "fjord-shared:ExportsOutputFnGetAttfjordredisSGfjordredis2A4BA9F2GroupIdD552C854"
                         },
                         "sourceSecurityGroupId": {
                           "Fn::GetAtt": [
-                            "fjordserviceMyGroupSecurityGroupEFD57A33",
+                            "fjordserviceNewestGroupSecurityGroup6D328DF4",
                             "GroupId"
                           ]
                         },
@@ -2038,11 +2042,11 @@
           },
           "CDKMetadata": {
             "id": "CDKMetadata",
-            "path": "fjord-consumer-MyGroup/CDKMetadata",
+            "path": "fjord-consumer-NewestGroup/CDKMetadata",
             "children": {
               "Default": {
                 "id": "Default",
-                "path": "fjord-consumer-MyGroup/CDKMetadata/Default",
+                "path": "fjord-consumer-NewestGroup/CDKMetadata/Default",
                 "constructInfo": {
                   "fqn": "@aws-cdk/core.CfnResource",
                   "version": "1.115.0"
@@ -2050,7 +2054,7 @@
               },
               "Condition": {
                 "id": "Condition",
-                "path": "fjord-consumer-MyGroup/CDKMetadata/Condition",
+                "path": "fjord-consumer-NewestGroup/CDKMetadata/Condition",
                 "constructInfo": {
                   "fqn": "@aws-cdk/core.CfnCondition",
                   "version": "1.115.0"

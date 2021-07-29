@@ -3,14 +3,15 @@
   "server": {
     "NAME": "Fjord-Server",
     "JWT_KEY": "jqq247gjrhvariorrbgehtcwz5k0x0slmmxndnde",
+    "API_TOPICS": "stocks weather",
     "SEC_PER_PULSE": "30"
   },
   "consumerGroups": [
     {
-      "NAME": "MyGroup",
+      "NAME": "NewestGroup",
       "KAFKA_TOPICS": "stocks weather",
       "API_TOPICS": "stocks weather",
-      "FROM_BEGINNINGS": "false true",
+      "FROM_BEGINNINGS": "false false",
       "BROKERS": "157.245.248.211:9093",
       "SECURITY": "SASL-plain",
       "KAFKA_USERNAME": "goMates",

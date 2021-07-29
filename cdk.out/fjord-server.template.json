@@ -147,6 +147,10 @@
                 "Value": "30"
               },
               {
+                "Name": "API_TOPICS",
+                "Value": "stocks weather"
+              },
+              {
                 "Name": "REDIS_HOST",
                 "Value": {
                   "Fn::ImportValue": "fjord-shared:ExportsOutputFnGetAttfjordredisfjordrediscluster656EBEC2RedisEndpointAddressDBB68F11"
@@ -164,7 +168,7 @@
               }
             ],
             "Essential": true,
-            "Image": "dockervahid/fjord-server",
+            "Image": "dockervahid/server3",
             "LogConfiguration": {
               "LogDriver": "awslogs",
               "Options": {
@@ -280,7 +284,7 @@
           "MaximumPercent": 200,
           "MinimumHealthyPercent": 50
         },
-        "DesiredCount": 1,
+        "DesiredCount": 2,
         "EnableECSManagedTags": false,
         "HealthCheckGracePeriodSeconds": 60,
         "LaunchType": "FARGATE",
@@ -393,8 +397,8 @@
     "fjordLBFjordServerServiceTaskCountTarget9030FB2E": {
       "Type": "AWS::ApplicationAutoScaling::ScalableTarget",
       "Properties": {
-        "MaxCapacity": 2,
-        "MinCapacity": 1,
+        "MaxCapacity": 3,
+        "MinCapacity": 2,
         "ResourceId": {
           "Fn::Join": [
             "",
