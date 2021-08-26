@@ -81,7 +81,9 @@ Details about `JWT_KEY` and `SEC_PER_PULSE` can be located in the [server repo](
 
 `consumerGroups` represents a list of one or more Kafka consumer groups that will comprise your Fjord Consumer, where each object represents a consumer group that consists of one or more members. Here, `name` also represents a logical identifier for all AWS resources that are deployed for the Fjord Consumer.
 
-Pertinent details about all other properties, including `KAFKA_TOPICS`, `API_TOPICS`, `MEMBERS_COUNT`, etc., can be found in the [consumer repo](https://github.com/fjord-framework/consumer).
+`MEMBERS_COUNT` should be a space-delimited list of numbers that will be used to specify the number of members for each Kafka consumer group. If not specified, or if there are fewer numbers than there are consumer groups, the group will have one consumer by default.
+
+Other pertinent details about all other properties, including `KAFKA_TOPICS`, `API_TOPICS`, `FROM_BEGINNINGS`, `CONCURRENT_PARTITIONS`, etc., can be found in the [consumer repo](https://github.com/fjord-framework/consumer).
 
 5. Run `cdk synth`. This optional step generates the CloudFormation templates for each stack, if they are not already present, and places them in the `/cdk.out` directory.
 
