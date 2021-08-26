@@ -1,7 +1,7 @@
 {
-  "name": "Fjord App",
+  "name": "ShoppingApp",
   "server": {
-    "NAME": "Fjord-Server",
+    "NAME": "APIs",
     "JWT_KEY": "",
     "API_TOPICS": "orders shipments",
     "SEC_PER_PULSE": "30"

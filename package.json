@@ -15,11 +15,11 @@
     "jest": "^26.4.2"
   },
   "dependencies": {
-    "@aws-cdk/aws-ec2": "^1.115.0",
-    "@aws-cdk/aws-ecs": "^1.115.0",
-    "@aws-cdk/aws-ecs-patterns": "^1.115.0",
-    "@aws-cdk/aws-elasticache": "^1.115.0",
+    "@aws-cdk/aws-ec2": "^1.119.0",
+    "@aws-cdk/aws-ecs": "^1.119.0",
+    "@aws-cdk/aws-ecs-patterns": "^1.119.0",
+    "@aws-cdk/aws-elasticache": "^1.119.0",
     "@aws-cdk/aws-s3": "^1.114.0",
-    "@aws-cdk/core": "^1.115.0"
+    "@aws-cdk/core": "^1.119.0"
   }
 }
